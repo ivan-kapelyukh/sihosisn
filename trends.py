@@ -26,3 +26,13 @@ def parse_tw_history(history):
     times.reverse()
     rates.reverse()
     return [times, rates]
+
+
+# passes if rate is increasing, and we are quite sure of this
+def upward_trend(gradient, certainty):
+    MIN_GRAD = 0.0
+    MIN_CERTAINTY = 0.5
+    if (gradient > MIN_GRAD and certainty > MIN_CERTAINTY):
+        return "hold"
+    else:
+        return "sell"
