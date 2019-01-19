@@ -37,12 +37,13 @@ for (let i = 0; i < n; i++) {
   boxes.push(box);
 }
 
-for (let i = 0; i < n; i++) {
-  const value = 2 * Math.random() - 1;
-  boxes[n - 1].update(value);
+function newClose(value) {
+  for (let i = 0; i < n; i++) {
+    boxes[n - 1].update(value);
 
-  for (let i = n - 2; i >= 0; i--) {
-    boxes[i].update(boxes[i + 1].close);
+    for (let i = n - 2; i >= 0; i--) {
+      boxes[i].update(boxes[i + 1].close);
+    }
   }
 }
 
@@ -61,13 +62,13 @@ new p5(sketch => {
   const mid = sketch.windowHeight / 2;
   const sector = sketch.windowWidth / (n * 2);
 
-  sketch.setup = function() {
+  sketch.setup = function () {
     sketch.createCanvas(sketch.windowWidth, sketch.windowHeight);
 
     sketch.noStroke();
   };
 
-  sketch.draw = function() {
+  sketch.draw = function () {
     sketch.background("#1c3d5a");
 
     for (let i = 0; i < n; i++) {
