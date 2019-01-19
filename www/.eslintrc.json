@@ -1,0 +1,16 @@
+{
+  "extends": [
+    "google",
+    "prettier"
+  ],
+  "parser": "babel-eslint",
+  "plugins": [
+    "prettier"
+  ],
+  "rules": {
+    "prettier/prettier": "error"
+  },
+  "parserOptions": {
+    "sourceType": "module"
+  }
+}

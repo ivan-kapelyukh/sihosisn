@@ -1,12 +1,82 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nova+Mono:200,300,400,500,600,700,800" />
+    <title>Refactored Adventure</title>
+  </head>
 
-<head>
-  <title>Refactored Adventure</title>
-</head>
+  <body>
+    <div class="content font-sans">
+      <h1 class="absolute pin-t pin-l p-10 uppercase font-bold text-blue-light text-8xl">
+        <i class="fas fa-tram"></i>
+      </h1>
 
-<body>
-  <h1>Hello World!</h1>
-</body>
+      <div id="setup" class="setup bg-blue-darkest text-white rounded-lg p-10 text-center shadow-lg">
+        <div class="flex text-sm items-center">
+          <div class="flex-1 py-3 rounded mr-12 input w-48 text-3xl">
+            <img src="flags/united-states-of-america.svg" class="w-16 shadow rounded-full" /> <span>USD</span>
+            <i class="fas fa-caret-down"></i>
+          </div>
+          <i class="fas fa-long-arrow-alt-right text-4xl"></i>
+          <div class="flex-1 py-3 rounded ml-12 input w-48 text-3xl">
+            <img src="flags/european-union.svg" class="w-16 shadow rounded-full" /> <span>EUR</span>
+            <i class="fas fa-caret-down"></i>
+          </div>
+        </div>
 
+        <div class="flex justify-center items-center mt-6">
+          <div class="text-blue">
+            <input
+              class="number inline-block bg-blue-darker w-24 mr-1 rounded text-blue text-4xl text-center"
+              value="0"
+              disabled
+            />
+            <input
+              class="number inline-block bg-blue-darker w-24 mr-1 rounded text-blue text-4xl text-center"
+              value="0"
+              disabled
+            />
+            <input
+              class="number inline-block bg-blue-darker w-24 mr-1 rounded text-blue text-4xl text-center"
+              value="0"
+              disabled
+            />
+            <div class="inline-block dot px-2"><i class="fas fa-circle"></i></div>
+            <input
+              class="number inline-block bg-blue-darker w-24 mr-1 rounded text-blue text-4xl text-center"
+              value="0"
+              disabled
+            />
+            <input
+              class="number inline-block bg-blue-darker w-24 mr-1 rounded text-blue text-4xl text-center"
+              value="0"
+              disabled
+            />
+          </div>
+        </div>
+
+        <a
+          href="#"
+          id="submit"
+          class="bg-transition font-bold py-4 px-16 text-2xl uppercase inline-block bg-blue-dark shadow hover:bg-blue text-white no-underline rounded-full mt-10"
+        >
+          <i class="fas fa-space-shuttle mr-2"></i> <span>Transfer</span>
+        </a>
+      </div>
+    </div>
+
+    <div id="sketch"></div>
+
+    <!-- <div class="convert flex absolute pin-t pin-l p-10">
+      <img src="flags/european-union.svg" class="w-24 mr-4" /> <i class="fas fa-long-arrow-alt-right text-white"></i>
+      <img src="flags/united-kingdom.svg" class="w-24 ml-4" />
+    </div> -->
+
+    <!-- <div class="top bg-blue-dark"></div> -->
+    <!-- <div class="bottom bg-blue"></div> -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/p5.min.js"></script>
+    <script src="index.js"></script>
+  </body>
 </html>

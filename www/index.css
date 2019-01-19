@@ -1,0 +1,90 @@
+@tailwind preflight;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  outline: none;
+}
+
+.content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100vw;
+  height: 100vh;
+}
+
+.input {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.top {
+  position: absolute;
+  top: 0;
+  bottom: 50vh;
+  left: 0;
+  right: 0;
+  z-index: -1;
+}
+
+.bottom {
+  position: absolute;
+  top: 50vh;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: -1;
+}
+
+img {
+  opacity: 0.9;
+}
+
+.convert {
+  align-items: center;
+  font-size: 60px;
+}
+
+.button {
+  font-size: 30px;
+  line-height: 80px;
+  width: 80px;
+  height: 80px;
+}
+
+.bg-transition {
+  transition: 0.2s ease background;
+}
+
+.setup {
+  transform: scale(1);
+}
+
+.setup.hide {
+  transform: scale(0);
+  opacity: 0;
+  transition: 0.6s cubic-bezier(0.6, -0.28, 0.735, 0.045) all;
+}
+
+.number {
+  height: 70px;
+  width: 70px;
+  line-height: 70px;
+}
+
+.dot {
+  position: relative;
+  top: -5px;
+}
+
+canvas {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: -1;
+}
