@@ -24,7 +24,7 @@ document.getElementById("submit").addEventListener("click", e => {
     const source = document.getElementById("source").innerHTML;
     const target = document.getElementById("target").innerHTML;
 
-    const inSeconds = 60 * 60 * 24 * 7;
+    const inSeconds = 24 * 7;
     let sourceAmount = Array.from(inputs)
       .reverse()
       .reduce((accumulator, element, i) => {
@@ -48,23 +48,22 @@ document.getElementById("submit").addEventListener("click", e => {
     fetch(HOSTNAME + "api/history?source=" + source + "&target=" + target + "&time=" + time)
       .then(response => response.json())
       .then(closes => {
-        console.log(closes);
         addCloses(closes);
       });
 
     fetch(
       HOSTNAME +
-        "api/transfer?source=" +
-        source +
-        "&target=" +
-        target +
-        "&timeFrame=" +
-        inSeconds +
-        "&amount=" +
-        sourceAmount +
-        "&demoMode=true" +
-        "&time=" +
-        time
+      "api/transfer?source=" +
+      source +
+      "&target=" +
+      target +
+      "&timeFrame=" +
+      inSeconds +
+      "&amount=" +
+      sourceAmount +
+      "&demoMode=true" +
+      "&time=" +
+      time
     )
       .then(response => response.text())
       .then(data => {
@@ -81,13 +80,24 @@ document.getElementById("submit").addEventListener("click", e => {
       fetch(HOSTNAME + "api/demo-update?transferId=" + transactionId + "&timeElapsed=" + timeElapsed)
         .then(response => response.json())
         .then(pair => {
-          console.log(pair.price);
-          newEntry(pair.price, pair.sellAmount);
+          console.log("New Price", pair.price);
+          console.log("Sold amount", pair.soldAmount);
+          newEntry(pair.price, pair.soldAmount);
+
+          sourceAmount -= pair.soldAmount;
+          targetAmount += pair.boughtAmount;
+
+          for (let i = 0; i < 2; i++) {
+            values[i].getElementsByTagName("span")[0].innerHTML =
+              pad((i == 0 ? sourceAmount : targetAmount).toFixed(2), 6) +
+              " " +
+              dropdowns[i].getElementsByTagName("span")[0].innerHTML;
+          }
         });
 
       // newEntry(c, c);
       c += 10;
-    }, 1000);
+    }, 500);
   }, 1000);
 });
 

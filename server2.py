@@ -146,7 +146,8 @@ def transfer():
         'start': time_now,
         'risk': -1,
         'end': time_now + timeframe,
-        'demoMode': demo_mode
+        'demoMode': demo_mode,
+        'amountLeft': amount
     })['id']
 
 
@@ -169,14 +170,30 @@ def demo_update():
                         time_now - transaction_timeframe, time_now)
 
     frac = st.fraction_to_sell(transaction['start'], time_now,
-                               transaction['end'], rates, 10)
+                               transaction['end'], rates,
+                               transaction['end'] - transaction['start'])
 
-    # print(rates)
+    sell_amount = round(frac * transaction['amountLeft'], 2)
+
+    updateAmountLeft(transfer_id, transaction['amountLeft'] - sell_amount)
+
+    last_price = rates[-1]
 
     return json.dumps({
-        'price': rates[-1],
-        'sellAmount': frac,
+        'price': last_price,
+        'soldAmount': sell_amount,
+        'boughtAmount': round(sell_amount * last_price, 2)
     })
+
+
+def updateAmountLeft(transfer_id, new_amount):
+    req = requests.post(
+        "http://localhost:3001/api/updateTransactionAmount",
+        headers={"Content-Type": "application/json"},
+        data=json.dumps({
+            "id": transfer_id,
+            "amountLeft": new_amount
+        }))
 
 
 @app.route("/price")

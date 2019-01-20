@@ -57,7 +57,7 @@ def fraction_to_sell(original_date, now_date, sell_by_date, rates,
     motivation_factor = 1.0 / interval_left
 
     # wants to sell quickly when -ve, and hold for longer when +ve
-    heuristic_factor = 2 if gradient < 0 else 0.5
+    heuristic_factor = 0.5 if gradient < 0 else 0.25
 
     print("DCA: " + str(dca_factor) + ", trend: " + str(trend_factor) +
           ", motivation: " + str(motivation_factor))
@@ -65,6 +65,11 @@ def fraction_to_sell(original_date, now_date, sell_by_date, rates,
     # * motivation_factor
     # TODO: re-add
 
+    print("FRACTION: " + str(fraction))
+
+    print("FRACTION: " + str(fraction))
+
+    print("FRACTION: " + str(fraction))
     return min(1.0, fraction)
 
 
