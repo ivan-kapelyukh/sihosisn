@@ -188,6 +188,8 @@ def demo_update():
 
         updateAmountLeft(transfer_id,
                          max(0, transaction['amountLeft'] - sell_amount))
+    else:
+      sell_amount = 0
 
     last_price = rates[-1]
 
