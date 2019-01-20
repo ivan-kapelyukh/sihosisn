@@ -30,9 +30,9 @@ class Stick {
     return this._target;
   }
 
-  update(close) {
+  update(open, close) {
     this._current = this._target;
-    this._target = new Range(this._current.close, close);
+    this._target = new Range(open, close);
   }
 
   draw() {
@@ -66,25 +66,60 @@ class Bar {
 const sticks = [];
 const bars = [];
 
+let pastCloses = [];
+let pastSells = [];
+
 for (let i = 0; i < STICKS; i++) {
   sticks.push(new Stick());
   bars.push(new Bar());
+
+  pastCloses.push(0);
+  pastSells.push(0);
 }
 
-export function newClose(close, sell) {
-  sticks[STICKS - 1].update(close);
-  bars[STICKS - 1].update(sell);
+pastCloses.push(0);
 
-  for (let i = STICKS - 2; i >= 0; i--) {
-    sticks[i].update(sticks[i + 1].current.close);
-    bars[i].update(bars[i + 1].current);
+export function addCloses(closes) {
+  pastCloses = closes;
+
+  const max = Math.max(...closes);
+  const min = Math.min(...closes);
+
+  const range = max - min;
+  const normalised = closes.map(close => (close - min) / range);
+
+  sticks[0].update(0, normalised[0]);
+
+  for (let i = 0; i < STICKS; i++) {
+    sticks[i].update(normalised[i], normalised[i + 1]);
   }
 }
 
+export function addSells(sells) {
+  pastSells = sells;
+
+  const max = Math.max(...sells);
+  const normalised = sells.map(sell => sell / max);
+
+  for (let i = 0; i < STICKS; i++) {
+    bars[i].update(normalised[i]);
+  }
+}
+
+export function newEntry(close, sell) {
+  pastCloses.push(close);
+  pastCloses.shift();
+
+  pastSells.push(sell);
+  pastSells.shift();
+
+  addCloses(pastCloses);
+  addSells(pastSells);
+}
+
 new p5(sketch => {
-  const barchart = 200;
+  const barchart = 0.3 * sketch.windowHeight;
   const candlestick = sketch.windowHeight - barchart;
-  const mid = candlestick / 2;
   const sector = sketch.windowWidth / (STICKS * 2);
 
   sketch.setup = function() {
@@ -104,28 +139,26 @@ new p5(sketch => {
 
       if (range.open > range.close) {
         sketch.fill("#e3342f");
-        // if (i > 20 && i < 30) sketch.fill("#ffed4a");
         sketch.rect(
-          sector * (i + 0.5) * 2,
-          mid - range.open * 0.5 * (candlestick - 50),
+          sector * (i + 0.25) * 2,
+          (1 - range.open) * (candlestick - 50) + 25,
           sector,
-          (range.open - range.close) * 0.5 * (candlestick - 50),
+          (range.open - range.close) * (candlestick - 50),
           5
         );
       } else {
         sketch.fill("#38c172");
-        // if (i > 20 && i < 30) sketch.fill("#ffed4a");
         sketch.rect(
-          sector * (i + 0.5) * 2,
-          mid - range.close * 0.5 * (candlestick - 50),
+          sector * (i + 0.25) * 2,
+          (1 - range.close) * (candlestick - 50) + 25,
           sector,
-          (range.close - range.open) * 0.5 * (candlestick - 50),
+          (range.close - range.open) * (candlestick - 50),
           5
         );
       }
     }
 
-    sketch.fill("#12283a");
+    sketch.fill("rgba(0, 0, 0, 0.5)");
     sketch.rect(0, candlestick, sketch.windowWidth, barchart);
 
     for (let i = 0; i < STICKS; i++) {
@@ -135,7 +168,7 @@ new p5(sketch => {
       const height = bar.current * barchart - 25;
 
       sketch.fill("#ffed4a");
-      sketch.rect(sector * (i + 0.5) * 2, candlestick + (barchart - height), sector, barchart, 5);
+      sketch.rect(sector * (i + 0.25) * 2, candlestick + (barchart - height), sector, barchart, 5);
     }
   };
 }, document.getElementById("sketch"));

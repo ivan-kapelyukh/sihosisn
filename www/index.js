@@ -1,8 +1,11 @@
 import "./index.css";
 
-import { newClose } from "./sketch";
+import { addCloses, newEntry } from "./sketch";
 
+const HOSTNAME = "http://localhost:5000/";
 const inputs = document.getElementsByTagName("input");
+
+document.getElementsByTagName("body")[0].classList.add("show");
 
 function pad(num, size) {
   var s = "000" + num;
@@ -21,7 +24,7 @@ document.getElementById("submit").addEventListener("click", e => {
     const source = document.getElementById("source").innerHTML;
     const target = document.getElementById("target").innerHTML;
 
-    const inSeconds = 60 * 60 * 24 * 7;
+    const inSeconds = 24 * 7;
     let sourceAmount = Array.from(inputs)
       .reverse()
       .reduce((accumulator, element, i) => {
@@ -39,36 +42,69 @@ document.getElementById("submit").addEventListener("click", e => {
 
     document.getElementById("status").classList.add("show");
 
-    // fetch("/api/history?source=" + source + "&target=" + target).then(data => {
-    //   const closes = JSON.parse(data);
-    //   closes.forEach(close => newClose(parseInt(close)));
-    // });
+    const time = 100;
+    let transactionId;
 
-    // fetch(
-    //   "/api/transfer?source=" +
-    //     source +
-    //     "&target=" +
-    //     target +
-    //     "&timeFrame=" +
-    //     inSeconds +
-    //     "&amount=" +
-    //     sourceAmount +
-    //     "&demoMode=true"
-    // ).then(data => {
-    //   transactionId = data;
-    // });
+    fetch(HOSTNAME + "api/history?source=" + source + "&target=" + target + "&time=" + time)
+      .then(response => response.json())
+      .then(closes => {
+        addCloses(closes);
 
-    for (let i = 0; i < 100; i++) {
-      newClose(2 * Math.random() - 1, Math.random());
-    }
+        fetch(
+          HOSTNAME +
+          "api/transfer?source=" +
+          source +
+          "&target=" +
+          target +
+          "&timeFrame=" +
+          inSeconds +
+          "&amount=" +
+          sourceAmount +
+          "&demoMode=true" +
+          "&time=" +
+          time
+        )
+          .then(response => response.text())
+          .then(data => {
+            console.log("Transaction ID", data)
+            transactionId = data;
 
-    setInterval(() => {
-      // fetch("/api/status?demoMode=true&id=" + transactionId).then(data => {
-      //   newClose(parseInt(data));
-      // });
+            // addCloses(Array.apply(null, Array(101)).map(() => 50 * Math.random()));
 
-      newClose(2 * Math.random() - 1, Math.random());
-    }, 5000);
+            let c = 50;
+            let timeElapsed = 0;
+            setInterval(() => {
+              timeElapsed += 1;
+
+              fetch(HOSTNAME + "api/demo-update?transferId=" + transactionId + "&timeElapsed=" + timeElapsed)
+                .then(response => response.json())
+                .then(pair => {
+                  console.log("New Price", pair.price);
+                  console.log("Sold amount", pair.soldAmount);
+                  newEntry(pair.price, pair.soldAmount);
+
+                  sourceAmount -= pair.soldAmount;
+                  if (sourceAmount < 0) {
+                    targetAmount += pair.soldAmount + sourceAmount
+                    sourceAmount = 0;
+                  } else {
+                    targetAmount += pair.boughtAmount;
+                  }
+
+                  for (let i = 0; i < 2; i++) {
+                    values[i].getElementsByTagName("span")[0].innerHTML =
+                      pad((i == 0 ? sourceAmount : targetAmount).toFixed(2), 6) +
+                      " " +
+                      dropdowns[i].getElementsByTagName("span")[0].innerHTML;
+                  }
+                });
+
+              // newEntry(c, c);
+              c += 10;
+            }, 1000);
+          });
+
+      });
   }, 1000);
 });
 

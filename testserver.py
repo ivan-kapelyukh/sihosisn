@@ -7,24 +7,22 @@ from bson.objectid import ObjectId
 from flask_pymongo import PyMongo
 import pymongo
 from pymongo import MongoClient
-
-app = Flask(__name__, template_folder="www")
-
-app.config['MONGO_DBNAME'] = 'hc4'  # name of database on mongo
-app.config[
-    "MONGO_URI"] = "mongodb://my1817:my1817@ds161724.mlab.com:61724/hc4test"
-mongo = PyMongo(app)
+import requests
+import json
 
 
-@app.route("/save")
-def save():
-    save_transaction("hello")
+def get_demo_transfer(id):
+    print(id)
+    temp = {}
+    temp["id"] = id
+    print(temp)
+    req = requests.post(
+        "http://localhost:3001/api/findTransaction",
+        headers={"Content-Type": "application/json"},
+        data=json.dumps(temp))
+
+    return req.json()
 
 
-def save_transaction(transaction):
-    trans = Transaction(transaction)
-    trans.save()
-
-
-if __name__ == "__main__":
-    app.run(debug=True)
+print(get_demo_transfer("5c44323f259a57873fb79543")['transaction'])
+# json.dumps({'id': 5c44323f259a57873fb79543})

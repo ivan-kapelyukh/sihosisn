@@ -6,6 +6,10 @@
   outline: none;
 }
 
+body.show {
+  display: inline !important;
+}
+
 .content {
   display: flex;
   align-items: center;
