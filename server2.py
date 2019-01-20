@@ -170,7 +170,7 @@ def demo_update():
     rates = get_history(transaction['source'], transaction['target'],
                             time_now - transaction_timeframe, time_now)
 
-    if transaction['amountLeft'] < 0.1:
+    if transaction['amountLeft'] > 0.1:
 
         frac = st.fraction_to_sell(transaction['start'], time_now,
                                    transaction['end'], rates,
