@@ -2,6 +2,8 @@ import "./index.css";
 
 import { addCloses, newEntry } from "./sketch";
 
+const HOSTNAME = "http://localhost:5000/";
+
 const inputs = document.getElementsByTagName("input");
 
 function pad(num, size) {
@@ -39,37 +41,48 @@ document.getElementById("submit").addEventListener("click", e => {
 
     document.getElementById("status").classList.add("show");
 
-    fetch("/api/history?source=" + source + "&target=" + target).then(data => {
-      const closes = JSON.parse(data);
-      addCloses(closes);
-    });
+    const time = 100;
+    let transactionId;
+
+    fetch(HOSTNAME + "api/history?source=" + source + "&target=" + target + "&time=" + time)
+      .then(response => response.json())
+      .then(closes => {
+        console.log(closes);
+        addCloses(closes);
+      });
 
     fetch(
-      "/api/transfer?source=" +
-        source +
-        "&target=" +
-        target +
-        "&timeFrame=" +
-        inSeconds +
-        "&amount=" +
-        sourceAmount +
-        "&demoMode=true"
-    ).then(data => {
+      HOSTNAME + "api/transfer?source=" +
+      source +
+      "&target=" +
+      target +
+      "&timeFrame=" +
+      inSeconds +
+      "&amount=" +
+      sourceAmount +
+      "&demoMode=true" +
+      "&time=" + time
+    ).then(response => response.text()).then(data => {
       transactionId = data;
     });
 
     // addCloses(Array.apply(null, Array(101)).map(() => 50 * Math.random()));
 
     let c = 50;
+    let timeElapsed = 0;
     setInterval(() => {
-      fetch("/api/demo-update?transferId=" + transactionId + "&timeElapsed=" + timeElapsed).then(data => {
-        let pair = JSON.parse(data);
-        newEntry(pair.price, pair.sellAmount);
-      });
+      timeElapsed += 1;
+
+      fetch(HOSTNAME + "api/demo-update?transferId=" + transactionId + "&timeElapsed=" + timeElapsed)
+        .then(response => response.json())
+        .then(pair => {
+          console.log(pair.price);
+          newEntry(pair.price, pair.sellAmount);
+        });
 
       // newEntry(c, c);
       c += 10;
-    }, 5000);
+    }, 1000);
   }, 1000);
 });
 
