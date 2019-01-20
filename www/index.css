@@ -66,7 +66,7 @@ img {
 .setup.hide {
   transform: scale(0);
   opacity: 0;
-  transition: 0.6s cubic-bezier(0.6, -0.28, 0.735, 0.045) all;
+  transition: 0.6s all cubic-bezier(0.6, -0.28, 0.735, 0.045);
 }
 
 .number {
@@ -80,6 +80,10 @@ img {
   top: -5px;
 }
 
+.time {
+  width: 300px;
+}
+
 canvas {
   position: absolute;
   top: 0;
@@ -87,4 +91,61 @@ canvas {
   left: 0;
   right: 0;
   z-index: -1;
+}
+
+.overlay {
+  visibility: hidden;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: black;
+  opacity: 0.6;
+  transition: 0.3s visibility ease;
+  transition: 0.3s opacity ease;
+}
+
+.overlay.show {
+  visibility: visible;
+  opacity: 0.6;
+}
+
+.currency {
+  visibility: hidden;
+  opacity: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  transition: 0.3s visibility ease;
+  transition: 0.3s opacity ease;
+}
+
+.currency.show {
+  visibility: visible;
+  opacity: 1;
+}
+
+.dropdown {
+  cursor: pointer;
+}
+
+.dropdown-option {
+  cursor: pointer;
+}
+
+.status {
+  left: 50%;
+  transform: scale(0);
+  visibility: hidden;
+  margin-left: -325px;
+  opacity: 0;
+}
+
+.status.show {
+  transform: scale(1);
+  opacity: 1;
+  visibility: visible;
+  transition: 0.6s all cubic-bezier(0.6, -0.28, 0.735, 0.045);
 }

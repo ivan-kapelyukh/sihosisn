@@ -8,19 +8,19 @@
 
   <body>
     <div class="content font-sans">
-      <h1 class="absolute pin-t pin-l p-10 uppercase font-bold text-blue-light text-8xl">
-        <i class="fas fa-tram"></i>
-      </h1>
-
       <div id="setup" class="setup bg-blue-darkest text-white rounded-lg p-10 text-center shadow-lg">
-        <div class="flex text-sm items-center">
-          <div class="flex-1 py-3 rounded mr-12 input w-48 text-3xl">
-            <img src="flags/united-states-of-america.svg" class="w-16 shadow rounded-full" /> <span>USD</span>
-            <i class="fas fa-caret-down"></i>
+        <div class="time py-3 bg-blue-darker px-10 rounded input text-3xl m-auto">
+          <i class="fas fa-stopwatch"></i> <span>1 Week</span> <i class="fas fa-caret-down"></i>
+        </div>
+
+        <div class="flex text-sm items-center mt-8">
+          <div class="dropdown flex-1 py-3 rounded mr-12 input w-48 text-3xl">
+            <img src="flags/united-states-of-america.svg" class="w-16 shadow rounded-full" />
+            <span id="source">USD</span> <i class="fas fa-caret-down"></i>
           </div>
           <i class="fas fa-long-arrow-alt-right text-4xl"></i>
-          <div class="flex-1 py-3 rounded ml-12 input w-48 text-3xl">
-            <img src="flags/european-union.svg" class="w-16 shadow rounded-full" /> <span>EUR</span>
+          <div class="dropdown flex-1 py-3 rounded ml-12 input w-48 text-3xl">
+            <img src="flags/european-union.svg" class="w-16 shadow rounded-full" /> <span id="target">EUR</span>
             <i class="fas fa-caret-down"></i>
           </div>
         </div>
@@ -66,15 +66,40 @@
       </div>
     </div>
 
+    <div id="overlay" class="overlay"></div>
+
+    <div id="currency" class="currency bg-blue-darkest text-white font-sans pt-4 pb-10 px-10 rounded-lg">
+      <div class="dropdown-option mt-6 py-4 px-8 rounded input text-2xl bg-blue-darker">
+        <img src="flags/united-states-of-america.svg" class="w-12 shadow rounded-full mr-6" /> <span>USD</span>
+      </div>
+      <div class="dropdown-option mt-6 py-4 px-8 rounded input text-2xl bg-blue-darker">
+        <img src="flags/united-kingdom.svg" class="w-12 shadow rounded-full mr-6" /> <span>GBP</span>
+      </div>
+      <div class="dropdown-option mt-6 py-4 px-8 rounded input text-2xl bg-blue-darker">
+        <img src="flags/european-union.svg" class="w-12 shadow rounded-full mr-6" /> <span>EUR</span>
+      </div>
+      <div class="dropdown-option mt-6 py-4 px-8 rounded input text-2xl bg-blue-darker">
+        <img src="flags/japan.svg" class="w-12 shadow rounded-full mr-6" /> <span>JPY</span>
+      </div>
+    </div>
+
     <div id="sketch"></div>
 
-    <!-- <div class="convert flex absolute pin-t pin-l p-10">
-      <img src="flags/european-union.svg" class="w-24 mr-4" /> <i class="fas fa-long-arrow-alt-right text-white"></i>
-      <img src="flags/united-kingdom.svg" class="w-24 ml-4" />
-    </div> -->
-
-    <!-- <div class="top bg-blue-dark"></div> -->
-    <!-- <div class="bottom bg-blue"></div> -->
+    <div
+      id="status"
+      class="status absolute pin-t text-white bg-blue-darkest mt-12 py-2 px-12 rounded-full shadow font-sans"
+    >
+      <div class="flex text-sm items-center">
+        <div class="value flex-1 py-3 rounded mr-12 input text-2xl">
+          <img src="flags/united-states-of-america.svg" class="w-12 shadow rounded-full mr-8" />
+          <span id="source">500 USD</span>
+        </div>
+        <i class="fas fa-long-arrow-alt-right text-4xl"></i>
+        <div class="value flex-1 py-3 rounded ml-12 input text-2xl">
+          <img src="flags/european-union.svg" class="w-12 shadow rounded-full mr-8" /> <span id="target">500 EUR</span>
+        </div>
+      </div>
+    </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/p5.min.js"></script>
     <script src="index.js"></script>
