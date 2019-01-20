@@ -27,7 +27,7 @@ def index():
 def profiles():
     return tw_handler.get_profiles()
 
-
+# Can make data fetching more granular using this function
 # @app.route("/quote")
 # def quote():
 #     profile = request.args.get('profile')

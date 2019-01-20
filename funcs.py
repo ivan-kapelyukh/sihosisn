@@ -10,5 +10,3 @@ def demo_loop(source, target, amount, sell_by, start):
     # [(time, amount), (time, amount)]
     return []
 
-def amount_to_sell(amount, sell_by, data):
-    return

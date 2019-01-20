@@ -4,7 +4,7 @@ from scipy import stats
 
 
 # returns [gradient, certainty], where certainty is goodness of fit in terms of r-squared value
-# note that times should be integers, e.g. 1 for Day 1, 2 for Day 2
+# note that times should be integers, e.g. 0 for Day 0, 1 for Day 1
 def get_gradient(times, rates):
     gradient, intercept, r_value, p_value, std_err = stats.linregress(
         times, rates)

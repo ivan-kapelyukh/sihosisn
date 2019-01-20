@@ -32,7 +32,7 @@ def print_quote(quote):
     print("%.2f %s => %.2f %s" % (quote['sourceAmount'], quote['source'],
                                   quote['targetAmount'], quote['target']))
 
-
+# Set up initial data
 print("INITIAL BALANCES")
 print_balances()
 print("====================")

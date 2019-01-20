@@ -22,6 +22,7 @@ quote = transferwise.create_quote(
     target_amount=100,
     quote_type="BALANCE_CONVERSION")
 
+# useful for debugging!
 print("%s/%s :: %f" % (quote["source"], quote["target"], quote["rate"]))
 
 # transfer_id = 47669084

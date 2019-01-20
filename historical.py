@@ -1,3 +1,4 @@
+# returns array of rates
 def get_gpb_usd_historical(start, end):
     # data start : 19-01-2016 - 1453161600
     # data end : 19-01-2019 - 1547856000

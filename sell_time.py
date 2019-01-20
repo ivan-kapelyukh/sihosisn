@@ -132,6 +132,24 @@ for day in range(n):
     print("")
 print("-----")
 
+print("FLAT DATA TEST:")
+data = [
+    10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10
+]
+data.reverse()
+future = data[-5:]
+n = len(future)
+hist = data[:(len(data) - n)]
+
+for day in range(n):
+    hist.pop(0)
+    hist.append(future.pop(0))
+    print("For day = " + str(day) + ", value = " + str(hist[-1]) +
+          ", selling fraction: " +
+          str(fraction_to_sell(0, day, n - 1, hist, 5)))
+    print("")
+print("-----")
+
 print("REAL DATA TEST, UPWARD:")
 data = [
     1.28825, 1.29820, 1.28860, 1.28720, 1.28740, 1.28505, 1.28515, 1.28515,
