@@ -49,55 +49,62 @@ document.getElementById("submit").addEventListener("click", e => {
       .then(response => response.json())
       .then(closes => {
         addCloses(closes);
+
+        fetch(
+          HOSTNAME +
+          "api/transfer?source=" +
+          source +
+          "&target=" +
+          target +
+          "&timeFrame=" +
+          inSeconds +
+          "&amount=" +
+          sourceAmount +
+          "&demoMode=true" +
+          "&time=" +
+          time
+        )
+          .then(response => response.text())
+          .then(data => {
+            console.log("Transaction ID", data)
+            transactionId = data;
+
+            // addCloses(Array.apply(null, Array(101)).map(() => 50 * Math.random()));
+
+            let c = 50;
+            let timeElapsed = 0;
+            setInterval(() => {
+              timeElapsed += 1;
+
+              fetch(HOSTNAME + "api/demo-update?transferId=" + transactionId + "&timeElapsed=" + timeElapsed)
+                .then(response => response.json())
+                .then(pair => {
+                  console.log("New Price", pair.price);
+                  console.log("Sold amount", pair.soldAmount);
+                  newEntry(pair.price, pair.soldAmount);
+
+                  sourceAmount -= pair.soldAmount;
+                  if (sourceAmount < 0) {
+                    targetAmount += pair.soldAmount + sourceAmount
+                    sourceAmount = 0;
+                  } else {
+                    targetAmount += pair.boughtAmount;
+                  }
+
+                  for (let i = 0; i < 2; i++) {
+                    values[i].getElementsByTagName("span")[0].innerHTML =
+                      pad((i == 0 ? sourceAmount : targetAmount).toFixed(2), 6) +
+                      " " +
+                      dropdowns[i].getElementsByTagName("span")[0].innerHTML;
+                  }
+                });
+
+              // newEntry(c, c);
+              c += 10;
+            }, 1000);
+          });
+
       });
-
-    fetch(
-      HOSTNAME +
-      "api/transfer?source=" +
-      source +
-      "&target=" +
-      target +
-      "&timeFrame=" +
-      inSeconds +
-      "&amount=" +
-      sourceAmount +
-      "&demoMode=true" +
-      "&time=" +
-      time
-    )
-      .then(response => response.text())
-      .then(data => {
-        transactionId = data;
-      });
-
-    // addCloses(Array.apply(null, Array(101)).map(() => 50 * Math.random()));
-
-    let c = 50;
-    let timeElapsed = 0;
-    setInterval(() => {
-      timeElapsed += 1;
-
-      fetch(HOSTNAME + "api/demo-update?transferId=" + transactionId + "&timeElapsed=" + timeElapsed)
-        .then(response => response.json())
-        .then(pair => {
-          console.log("New Price", pair.price);
-          console.log("Sold amount", pair.soldAmount);
-          newEntry(pair.price, pair.soldAmount);
-
-          sourceAmount -= pair.soldAmount;
-          targetAmount += pair.boughtAmount;
-
-          for (let i = 0; i < 2; i++) {
-            values[i].getElementsByTagName("span")[0].innerHTML =
-              pad((i == 0 ? sourceAmount : targetAmount).toFixed(2), 6) +
-              " " +
-              dropdowns[i].getElementsByTagName("span")[0].innerHTML;
-          }
-        });
-
-      // newEntry(c, c);
-      c += 10;
-    }, 500);
   }, 1000);
 });
 

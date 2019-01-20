@@ -15,6 +15,7 @@ from bson.objectid import ObjectId
 from flask_pymongo import PyMongo
 from flask_cors import CORS
 import numpy as np
+import math
 
 from transferwise import TransferWise
 
@@ -167,15 +168,26 @@ def demo_update():
     print(time_now)
 
     rates = get_history(transaction['source'], transaction['target'],
-                        time_now - transaction_timeframe, time_now)
+                            time_now - transaction_timeframe, time_now)
 
-    frac = st.fraction_to_sell(transaction['start'], time_now,
-                               transaction['end'], rates,
-                               transaction['end'] - transaction['start'])
+    if transaction['amountLeft'] < 0.1:
 
-    sell_amount = round(frac * transaction['amountLeft'], 2)
+        frac = st.fraction_to_sell(transaction['start'], time_now,
+                                   transaction['end'], rates,
+                                   transaction['end'] - transaction['start'])
 
-    updateAmountLeft(transfer_id, transaction['amountLeft'] - sell_amount)
+        sell_amount = math.floor(
+            frac * transaction['amountLeft'] * 100) / 100.0
+
+        print("================")
+        print("TRANS AMOUNT LEFT", transaction['amountLeft'])
+        print("================")
+        print("================")
+        print("SELL AMOUNT", sell_amount)
+        print("================")
+
+        updateAmountLeft(transfer_id,
+                         max(0, transaction['amountLeft'] - sell_amount))
 
     last_price = rates[-1]
 
