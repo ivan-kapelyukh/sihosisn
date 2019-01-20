@@ -93,3 +93,33 @@ for day in range(5):
     hist.pop(0)
     hist.append(future.pop(0))
 print("-----")
+
+print("SLIGHT NEGATIVE TEST:")
+hist = [1.030, 1.026, 1.025, 1.019, 1.018]
+future = [1.018, 1.015, 1.011, 1.009, 1.008]
+for day in range(5):
+    print("For day = " + str(day) + ", selling fraction: " +
+          str(fraction_to_sell(0, day, 4, hist, 5)))
+    hist.pop(0)
+    hist.append(future.pop(0))
+print("-----")
+
+print("SLIGHT POSITIVE TEST:")
+hist = [1002, 1005, 1006]
+future = [1007, 1008, 1009, 1009, 1015]
+for day in range(5):
+    print("For day = " + str(day) + ", selling fraction: " +
+          str(fraction_to_sell(0, day, 4, hist, 5)))
+    hist.pop(0)
+    hist.append(future.pop(0))
+print("-----")
+
+print("SLIGHT POSITIVE TEST WITH TWIST:")
+hist = [1002, 1005, 1006]
+future = [1007, 1008, 750, 560, 240]
+for day in range(5):
+    print("For day = " + str(day) + ", selling fraction: " +
+          str(fraction_to_sell(0, day, 5, hist, 5)))
+    hist.pop(0)
+    hist.append(future.pop(0))
+print("-----")
