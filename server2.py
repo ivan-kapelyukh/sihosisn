@@ -13,6 +13,8 @@ from mongoengine import connect
 from models.transaction import Transaction
 from bson.objectid import ObjectId
 from flask_pymongo import PyMongo
+from flask_cors import CORS
+import numpy as np
 
 from transferwise import TransferWise
 
@@ -25,6 +27,9 @@ app.config[
     'MONGO_URI'] = "mongodb://hc4:pgmyzcik99>@ds161724.mlab.com:61724/hc4"
 
 app.config['MONGODB_SETTINGS'] = {'db': 'testing', 'alias': 'default'}
+
+CORS(app)
+
 mongo = PyMongo(app)
 
 # DB_NAME = "hc4"
@@ -46,16 +51,22 @@ def index():
 
 
 USDJPY = pd.read_csv("./data/USDJPY.csv")
+USDJPY["time"] = np.arange(0, len(USDJPY))
 
 EURUSD = pd.read_csv("./data/EURUSD.csv")
+EURUSD["time"] = np.arange(0, len(EURUSD))
 
 GBPUSD = pd.read_csv("./data/GBPUSD.csv")
+GBPUSD["time"] = np.arange(0, len(GBPUSD))
 
 EURJPY = pd.read_csv("./data/EURJPY.csv")
+EURJPY["time"] = np.arange(0, len(EURJPY))
 
 GBPJPY = pd.read_csv("./data/GBPJPY.csv")
+GBPJPY["time"] = np.arange(0, len(GBPJPY))
 
 EURGBP = pd.read_csv("./data/EURGBP.csv")
+EURGBP["time"] = np.arange(0, len(EURGBP))
 
 
 def get_range(data, x, y):
@@ -101,20 +112,20 @@ def get_history(src, trg, start, end):
             return invert(get_range(EURGBP, start, end))
 
 
-@app.route("/history")
+@app.route("/api/history")
 def history():
     source = request.args.get('source')
     target = request.args.get('target')
     time_now = int(request.args.get('time'))
 
-    history = get_history(source, target, time_now - 101 * 60 * 60, time_now)
+    history = get_history(source, target, time_now - 102 * 60 * 60, time_now)
 
     print(history)
 
     return json.dumps(history)
 
 
-@app.route("/transfer")
+@app.route("/api/transfer")
 def transfer():
     source = request.args.get('source')
     target = request.args.get('target')
@@ -139,7 +150,7 @@ def transfer():
     })['id']
 
 
-@app.route("/demo-update")
+@app.route("/api/demo-update")
 def demo_update():
     transfer_id = request.args.get('transferId')
     time_elapsed = int(request.args.get('timeElapsed'))
@@ -150,15 +161,21 @@ def demo_update():
 
     transaction_timeframe = transaction['end'] - transaction['start']
 
+    # print(transaction_timeframe)
+    print(time_now - transaction_timeframe)
+    print(time_now)
+
     rates = get_history(transaction['source'], transaction['target'],
                         time_now - transaction_timeframe, time_now)
 
     frac = st.fraction_to_sell(transaction['start'], time_now,
                                transaction['end'], rates, 10)
 
+    # print(rates)
+
     return json.dumps({
-        'price': -1,
-        'sellAmount': 0,
+        'price': rates[-1],
+        'sellAmount': frac,
     })
 
 
