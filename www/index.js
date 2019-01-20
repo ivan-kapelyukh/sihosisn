@@ -1,6 +1,6 @@
 import "./index.css";
 
-import { newClose } from "./sketch";
+import { addCloses, newEntry } from "./sketch";
 
 const inputs = document.getElementsByTagName("input");
 
@@ -39,35 +39,36 @@ document.getElementById("submit").addEventListener("click", e => {
 
     document.getElementById("status").classList.add("show");
 
-    // fetch("/api/history?source=" + source + "&target=" + target).then(data => {
-    //   const closes = JSON.parse(data);
-    //   closes.forEach(close => newClose(parseInt(close)));
-    // });
+    fetch("/api/history?source=" + source + "&target=" + target).then(data => {
+      const closes = JSON.parse(data);
+      addCloses(closes);
+    });
 
-    // fetch(
-    //   "/api/transfer?source=" +
-    //     source +
-    //     "&target=" +
-    //     target +
-    //     "&timeFrame=" +
-    //     inSeconds +
-    //     "&amount=" +
-    //     sourceAmount +
-    //     "&demoMode=true"
-    // ).then(data => {
-    //   transactionId = data;
-    // });
+    fetch(
+      "/api/transfer?source=" +
+        source +
+        "&target=" +
+        target +
+        "&timeFrame=" +
+        inSeconds +
+        "&amount=" +
+        sourceAmount +
+        "&demoMode=true"
+    ).then(data => {
+      transactionId = data;
+    });
 
-    for (let i = 0; i < 100; i++) {
-      newClose(2 * Math.random() - 1, Math.random());
-    }
+    // addCloses(Array.apply(null, Array(101)).map(() => 50 * Math.random()));
 
+    let c = 50;
     setInterval(() => {
-      // fetch("/api/status?demoMode=true&id=" + transactionId).then(data => {
-      //   newClose(parseInt(data));
-      // });
+      fetch("/api/demo-update?transferId=" + transactionId + "&timeElapsed=" + timeElapsed).then(data => {
+        let pair = JSON.parse(data);
+        newEntry(pair.price, pair.sellAmount);
+      });
 
-      newClose(2 * Math.random() - 1, Math.random());
+      // newEntry(c, c);
+      c += 10;
     }, 5000);
   }, 1000);
 });
