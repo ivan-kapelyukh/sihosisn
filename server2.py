@@ -5,7 +5,8 @@ import os
 import time
 import historical as hs
 import pandas as pd
-# import sell_time as st
+import sell_time as st
+import requests
 import json
 from pymongo import MongoClient
 from mongoengine import connect
@@ -106,42 +107,58 @@ def history():
     target = request.args.get('target')
     time_now = int(request.args.get('time'))
 
-    history = get_history(source, target, time_now - 100 * 60 * 60, time_now)
+    history = get_history(source, target, time_now - 101 * 60 * 60, time_now)
 
     print(history)
 
-    return json.dumps(history)  # TODO: list of normalized history
+    return json.dumps(history)
 
 
-@app.route("/demo-update")
-def demo_update():
-    transfer_id = request.args.get('transferId')
-    time = request.args.get('time')
-
-    transaction = get_demo_transfer(transfer_id).transaction
-
-    return json.dumps({
-        'price': -1,
-        'sell_amount': 0,
-    })
-
-
-@app.route("/transfer", methods=["POST"])
+@app.route("/transfer")
 def transfer():
-    source = request.form.get('source')
-    target = request.form.get('target')
-    amount = request.form.get('amount')
-    timeframe = int(request.form.get('timeFrame'))
-    risk = int(request.form.get('risk'))
-    demo_mode = request.form.get('demoMode')
+    source = request.args.get('source')
+    target = request.args.get('target')
+    amount = request.args.get('amount')
+    timeframe = int(request.args.get('timeFrame'))
+    # risk = int(request.args.get('risk'))
+    demo_mode = request.args.get('demoMode')
+
+    if demo_mode:
+        time_now = int(request.args.get('time'))
+    else:
+        time_now = time.time()
 
     return save_transaction({
         'source': source,
         'target': target,
         'amount': amount,
-        'start': time,
-        'end': time + timeframe,
+        'start': time_now,
+        'risk': -1,
+        'end': time_now + timeframe,
         'demoMode': demo_mode
+    })['id']
+
+
+@app.route("/demo-update")
+def demo_update():
+    transfer_id = request.args.get('transferId')
+    time_elapsed = int(request.args.get('timeElapsed'))
+
+    transaction = get_demo_transfer(transfer_id)['transaction']
+
+    time_now = transaction['start'] + time_elapsed
+
+    transaction_timeframe = transaction['end'] - transaction['start']
+
+    rates = get_history(transaction['source'], transaction['target'],
+                        time_now - transaction_timeframe, time_now)
+
+    frac = st.fraction_to_sell(transaction['start'], time_now,
+                               transaction['end'], rates, 10)
+
+    return json.dumps({
+        'price': -1,
+        'sellAmount': 0,
     })
 
 
@@ -168,14 +185,10 @@ def save():
 def save_transaction(transaction):
     req = requests.post(
         "http://localhost:3001/api/saveTransaction",
-        headers={
-            "Authorization": "Bearer {}".format(self.api_token),
-            "X-idempotence-uuid":
-            str(uuid.uuid4()),  # Only used for borderless conversions
-            "Content-Type": "application/json"
-        },
-        data=transaction)
+        headers={"Content-Type": "application/json"},
+        data=json.dumps(transaction))
 
+    print("Reached here")
     return req.json()
 
 
@@ -185,15 +198,15 @@ def add_demo_mode_transfer(source, target, timeframe, risk, demo_mode):
 
 
 def get_demo_transfer(id):
+    print(id)
+    temp = {}
+    temp["id"] = id
     req = requests.post(
         "http://localhost:3001/api/findTransaction",
-        headers={
-            "Authorization": "Bearer {}".format(self.api_token),
-            "X-idempotence-uuid":
-            str(uuid.uuid4()),  # Only used for borderless conversions
-            "Content-Type": "application/json"
-        },
-        data=transaction_id)
+        headers={"Content-Type": "application/json"},
+        data=json.dumps({
+            "id": id
+        }))
 
     return req.json()
 
