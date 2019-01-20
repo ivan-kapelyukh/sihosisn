@@ -2,6 +2,8 @@ import "./index.css";
 
 import { addCloses, newEntry } from "./sketch";
 
+document.getElementsByTagName("body")[0].classList.add("show");
+
 const inputs = document.getElementsByTagName("input");
 
 function pad(num, size) {
@@ -69,7 +71,7 @@ document.getElementById("submit").addEventListener("click", e => {
 
       // newEntry(c, c);
       c += 10;
-    }, 5000);
+    }, 1000);
   }, 1000);
 });
 
