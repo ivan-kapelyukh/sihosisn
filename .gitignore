@@ -2,6 +2,8 @@
 .vscode/
 node_modules/
 dist/
+__pycache__/
+modelling/__pycache__/
 
 # Files
 *.key.*

@@ -45,8 +45,6 @@ def demo_transfer(source, target, start_time, end_time, risk):
 
         past_data = hs.get_gpb_usd_historical(t - 30 * 24 * 60 * 60, t)
 
-        # return past_data
-
         if st.should_sell(t, end_time, past_data):
             return t
 
